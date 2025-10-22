@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
-// Assuming lucide-react icons are available for a professional look
+
+// --- Icon Definitions (Replacing external imports for single-file deployment) ---
+// Note: In a real Next.js app, these would be imported from a library like 'lucide-react'
 const Zap = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>;
 const Settings = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.44a2 2 0 0 0-2 2.44v.22a2 2 0 0 0-2 2.44v.44a2 2 0 0 0 2 2.44v.22a2 2 0 0 0 2 2.44v.44a2 2 0 0 0 2 2.44v.22a2 2 0 0 0 2 2.44v.44a2 2 0 0 0 2 2.44v-.22a2 2 0 0 0 2-2.44v-.44a2 2 0 0 0 2-2.44v-.22a2 2 0 0 0 2-2.44v-.44a2 2 0 0 0-2-2.44v-.22a2 2 0 0 0-2-2.44v-.44a2 2 0 0 0-2-2.44z"/><circle cx="12" cy="12" r="3"/></svg>;
 const TrendingUp = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
@@ -7,30 +9,18 @@ const Check = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" widt
 
 
 /**
- * @typedef {Object} CardData
- * @property {number} id
- * @property {string} title
- * @property {string} description
- * @property {React.ComponentType} icon
- */
-
-/**
  * Renders an interactive feature card.
- * Demonstrates clean component separation and optimized content calculation via useMemo.
- *
  * @param {Object} props
- * @param {CardData} props.card
- * @param {boolean} props.isActive
- * @param {function(number): void} props.onClick
+ * @param {Object} props.card - Card data
+ * @param {boolean} props.isActive - Whether the card is currently selected
+ * @param {function(number): void} props.onClick - Handler for click events
  */
 const FeatureCard = React.memo(({ card, isActive, onClick }) => {
-    // Advanced technique: useMemo to ensure that the CTA text calculation (or any heavy logic)
-    // only runs when the card title changes, simulating performance optimization.
+    // Optimization technique: useMemo to ensure derived state/text generation is only run when needed.
     const ctaText = useMemo(() => {
-        // Simple example of computed, derived state.
         const base = "Explore";
         if (card.title.includes('Performance')) {
-            return `Boost ${base}`;
+            return `Boost ${base}`; // Dynamic text change based on card content
         }
         return `Learn More`;
     }, [card.title]);
@@ -44,7 +34,9 @@ const FeatureCard = React.memo(({ card, isActive, onClick }) => {
             className={`cursor-pointer border-2 border-gray-100 rounded-xl p-6 flex flex-col items-start space-y-4 ${activeClasses}`}
             onClick={() => onClick(card.id)}
             aria-label={`Activate card: ${card.title}`}
+            role="button"
         >
+            {/* Dynamic icon styling */}
             <card.icon className={`w-8 h-8 ${isActive ? 'text-blue-600' : 'text-gray-500'}`} />
             <h3 className="text-xl font-bold text-gray-800">{card.title}</h3>
             <p className="text-sm text-gray-600 flex-grow">{card.description}</p>
@@ -54,6 +46,8 @@ const FeatureCard = React.memo(({ card, isActive, onClick }) => {
                         ? 'bg-blue-600 hover:bg-blue-700'
                         : 'bg-gray-700 hover:bg-gray-800'
                     }`}
+                // Prevents the button click from triggering the parent card click handler twice
+                onClick={(e) => { e.stopPropagation(); onClick(card.id); }}
             >
                 {ctaText} {isActive && <Check className="inline w-4 h-4 ml-1" />}
             </button>
@@ -65,15 +59,12 @@ FeatureCard.displayName = 'FeatureCard';
 
 
 /**
- * Main application component, simulating the structure of a high-level Next.js page.
- * @returns {JSX.Element}
+ * Main application component.
  */
 export default function App() {
-    // State to manage which card is currently active/selected
-    /** @type {[number | null, React.Dispatch<React.SetStateAction<number | null>>]} */
     const [activeCardId, setActiveCardId] = useState(null);
 
-    /** @type {CardData[]} */
+    // Data initialization (simulating fetching from an API or context)
     const features = [
         {
             id: 1,
@@ -105,8 +96,9 @@ export default function App() {
 
     return (
         <div className="min-h-screen bg-gray-50 font-sans flex flex-col">
+            {/* Tailwind Script Loading (Crucial for styling) */}
             <script src="https://cdn.tailwindcss.com"></script>
-            {/* Tailwind Configuration for "Inter" font */}
+            {/* Custom Styles for Inter Font (Professional Standard) */}
             <style dangerouslySetInnerHTML={{ __html: `
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
                 html {
@@ -118,9 +110,8 @@ export default function App() {
             {/* --- Header / Navigation --- */}
             <header className="sticky top-0 z-10 bg-white shadow-md">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-                    <div className="text-2xl font-extrabold text-gray-900">
-                        {/* High-Level Branding for SEO/Accessibility */}
-                        <span aria-label="Project Fusion">Fusion.</span>
+                    <div className="text-2xl font-extrabold text-gray-900" aria-label="Project Fusion">
+                        Fusion.
                     </div>
                     <nav className="hidden md:flex space-x-6 text-gray-600 font-medium">
                         <a href="#features" className="hover:text-blue-600 transition duration-150">Features</a>
